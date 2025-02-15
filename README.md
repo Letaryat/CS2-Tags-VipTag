@@ -1,4 +1,4 @@
-# Arena-VipTagChange
+# CS2Tags_VipTag
 This plugin allows to someone with specific permission to set up their own scoreboard tag, chat tag and colors. This plugin uses MySQL database to store information about tags.
 
 ## [📌] Version for K4-Arenas:
