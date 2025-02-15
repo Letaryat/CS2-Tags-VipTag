@@ -9,7 +9,7 @@ This plugin allows to someone with specific permission to set up their own score
 - [CS2-Tags (at least v1.1)](https://github.com/schwarper/cs2-tags)
 - [PlayerSettings (needed for MenuManager)](https://github.com/NickFox007/PlayerSettingsCS2)
 - [AnyBaseLibCS2 (needed for MenuManager)](https://github.com/NickFox007/AnyBaseLibCS2)
-- [MenuManagerCS2 (needed for MenuManager)](https://github.com/NickFox007/MenuManagerCS2)
+- [MenuManagerCS2](https://github.com/NickFox007/MenuManagerCS2)
 
 ## [📋] Commands:
 - !settag  | Sets up tag. Usage: !settag ExampleTag,
