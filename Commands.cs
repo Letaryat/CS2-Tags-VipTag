@@ -12,7 +12,7 @@ public partial class CS2Tags_VipTag
 
     [ConsoleCommand("css_settag", "Ability for VIP to change their Scoreboard and Chat tag")]
     [CommandHelper(minArgs: 1, usage: "TagName")]
-    public async void TagChange(CCSPlayerController? player, CommandInfo commandInfo)
+    public void TagChange(CCSPlayerController? player, CommandInfo commandInfo)
     {
         if (player == null || player.IsBot || player.IsHLTV) return;
         if (!AdminManager.PlayerHasPermissions(player, Config.VipFlag))

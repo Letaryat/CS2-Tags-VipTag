@@ -301,7 +301,7 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
             string? menuOption;
             menuOption = $"<font color='{hex}'><b>{chatcolors}</b></font>";
 
-            menu?.AddItem(menuOption, async (player, option) =>
+            menu?.AddItem(menuOption, (player, option) =>
             {
                 switch (type)
                 {
