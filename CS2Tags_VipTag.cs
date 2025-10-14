@@ -3,14 +3,13 @@ using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Core.Translations;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using TagsApi;
-using MenuManager;
 using MySqlConnector;
 using Dapper;
-using CounterStrikeSharp.API.Modules.Entities;
 using System.Collections.Concurrent;
 using System.Drawing;
-using CounterStrikeSharp.API.Modules.Menu;
+using CS2MenuManager.API.Menu;
+using TagsApi;
+using static TagsApi.Tags;
 
 namespace CS2Tags_VipTag;
 
@@ -28,14 +27,11 @@ public class TagConfig : BasePluginConfig
 public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
 {
     public override string ModuleName => "CS2Tags_VipTag";
-    public override string ModuleVersion => "0.0.1";
+    public override string ModuleVersion => "0.0.2";
     public override string ModuleAuthor => "Letaryat";
     public override string ModuleDescription => "Tag change for vip players";
-    public static PluginCapability<ITagApi> Capability_TagsApi = new("tags:api");
-    public static ITagApi? SharedApi_Tag { get; private set; }
-    private IMenuApi? _api;
-    private readonly PluginCapability<IMenuApi?> _pluginCapability = new("menu:nfcore");
-    public TagConfig Config { get; set; }
+    private ITagApi _tagApi = null!;
+    public required TagConfig Config { get; set; }
 
     public readonly ConcurrentDictionary<ulong, Player?> Players = new();
     public string DbConnection = string.Empty;
@@ -47,25 +43,20 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
     public override void Load(bool hotReload)
     {
         Logger.LogInformation("CS2Tags_VipTag - Loaded");
-        if (SharedApi_Tag is null)
-        {
-            PluginCapability<ITagApi> Capability_TagApi = new("tags:api");
-            SharedApi_Tag = Capability_TagApi.Get();
-        }
         RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
         RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnect);
         RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
     }
+
+    public override void OnAllPluginsLoaded(bool hotReload)
+    {
+        _tagApi = ITagApi.Capability.Get() ?? throw new Exception("Tags API not found!");
+    }
+
     public override void Unload(bool hotReload)
     {
         Logger.LogInformation("CS2Tags_VipTag - Unloaded");
         _ = SaveAllTags();
-    }
-
-    public override void OnAllPluginsLoaded(bool hotReload)
-    {
-        _api = _pluginCapability.Get();
-        if (_api == null) Console.WriteLine("MenuManager Core not found...");
     }
 
     public async void OnConfigParsed(TagConfig config)
@@ -114,7 +105,7 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
     public string? GetITag(CCSPlayerController controller)
     {
         if (controller == null) { return null; }
-        return SharedApi_Tag?.GetPlayerTag(controller, Tags.Tags_Tags.ChatTag);
+        return _tagApi?.GetAttribute(controller, Tags.TagType.ChatTag);
     }
 
     public async Task<bool> UserExist(ulong SteamID)
@@ -290,18 +281,17 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
     public void CreateMenu(CCSPlayerController? player, int type)
     {
         if (player == null) { return; }
-        var menu = _api?.NewMenu("Tags menu");
-        var playerTypeMenu = _api!.GetMenuType(player);
+        WasdMenu menu = new("Tags menu", this);
         switch (type)
         {
             case 1:
-                menu = _api?.NewMenu(Localizer["TagColorMenu"]);
+                menu = new(Localizer["TagColorMenu"], this);
                 break;
             case 2:
-                menu = _api?.NewMenu(Localizer["ChatColorMenu"]);
+                menu = new(Localizer["ChatColorMenu"], this);
                 break;
             case 3:
-                menu = _api?.NewMenu(Localizer["NameColorMenu"]);
+                menu = new(Localizer["NameColorMenu"], this);
                 break;
         }
 
@@ -309,39 +299,33 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
         {
             string hex = FromNameToHex(chatcolors)!;
             string? menuOption;
-            if (playerTypeMenu == MenuType.ChatMenu || playerTypeMenu == MenuType.ConsoleMenu || playerTypeMenu == MenuType.CenterMenu)
-            {
-                menuOption = $"{{{chatcolors}}}{chatcolors}".ReplaceColorTags();
-            }
-            else
-            {
-                menuOption = $"<font color='{hex}'><b>{chatcolors}</b></font>";
-            }
+            menuOption = $"<font color='{hex}'><b>{chatcolors}</b></font>";
 
-            menu?.AddMenuOption(menuOption, async (player, option) =>
+            menu?.AddItem(menuOption, async (player, option) =>
             {
                 switch (type)
                 {
                     case 1:
-                        string? playertag = SharedApi_Tag?.GetPlayerTag(player, Tags.Tags_Tags.ScoreTag);
-                        SharedApi_Tag?.SetPlayerTag(player, Tags.Tags_Tags.ChatTag, $"{{{chatcolors}}}{Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
+                        string? playertag = _tagApi?.GetAttribute(player, TagType.ScoreTag);
+                        _tagApi?.SetAttribute(player, TagType.ChatTag, $"{{{chatcolors}}}{Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
+
                         player.PrintToChat($"{Localizer["Prefix"]}{{{chatcolors}}}{Localizer["NewTagColor", chatcolors]}".ReplaceColorTags());
                         Players[player.AuthorizedSteamID!.SteamId64]!.tagcolor = chatcolors;
                         break;
                     case 2:
-                        SharedApi_Tag?.SetPlayerColor(player, Tags.Tags_Colors.ChatColor, $"{{{chatcolors}}}");
+                        _tagApi?.SetAttribute(player, TagType.ChatColor, $"{{{chatcolors}}}");
                         player.PrintToChat($"{Localizer["Prefix"]}{{{chatcolors}}}{Localizer["NewChatColor", chatcolors]}".ReplaceColorTags());
                         Players[player.AuthorizedSteamID!.SteamId64]!.chatcolor = chatcolors;
                         break;
                     case 3:
-                        SharedApi_Tag?.SetPlayerColor(player, Tags.Tags_Colors.NameColor, $"{{{chatcolors}}}");
+                        _tagApi?.SetAttribute(player, TagType.NameColor, $"{{{chatcolors}}}");
                         player.PrintToChat($"{Localizer["Prefix"]}{{{chatcolors}}}{Localizer["NewNameColor", chatcolors]}".ReplaceColorTags());
                         Players[player.AuthorizedSteamID!.SteamId64]!.namecolor = chatcolors;
                         break;
                 }
             });
         }
-        menu?.Open(player);
+        menu!.Display(player, 0);
     }
 
 

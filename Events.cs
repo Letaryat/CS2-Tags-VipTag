@@ -18,30 +18,30 @@ public partial class CS2Tags_VipTag
             if (!AdminManager.PlayerHasPermissions(player, Config.VipFlag)) return HookResult.Continue;
             var VipTag = $" {Players[steamid64]!.tag}";
             if (Players[steamid64]!.visibility == false) { return HookResult.Continue; }
-            SharedApi_Tag?.SetPlayerTag(player!, Tags.Tags_Tags.ScoreTag, VipTag);
+            _tagApi?.SetAttribute(player!, Tags.TagType.ScoreTag | Tags.TagType.ChatTag, VipTag);
             if (Players[steamid64]!.chatcolor == null)
             {
-                SharedApi_Tag?.ResetPlayerColor(player, Tags.Tags_Colors.ChatColor);
+                _tagApi?.ResetAttribute(player, Tags.TagType.ChatColor);
             }
             else
             {
-                SharedApi_Tag?.SetPlayerColor(player!, Tags.Tags_Colors.ChatColor, $"{{{Players[steamid64]!.chatcolor}}}");
+                _tagApi?.SetAttribute(player!, Tags.TagType.ChatColor, $"{{{Players[steamid64]!.chatcolor}}}");
             }
             if (Players[steamid64]!.namecolor == null)
             {
-                SharedApi_Tag?.ResetPlayerColor(player, Tags.Tags_Colors.NameColor);
+                _tagApi?.ResetAttribute(player, Tags.TagType.NameColor);
             }
             else
             {
-                SharedApi_Tag?.SetPlayerColor(player!, Tags.Tags_Colors.NameColor, $"{{{Players[steamid64]!.namecolor}}}");
+                _tagApi?.SetAttribute(player!, Tags.TagType.NameColor, $"{{{Players[steamid64]!.namecolor}}}");
             }
             if (Players[steamid64]!.tagcolor == null)
             {
-                SharedApi_Tag?.SetPlayerTag(player!, Tags.Tags_Tags.ChatTag, $"{Players[steamid64]!.tag} ");
+                _tagApi?.SetAttribute(player!, Tags.TagType.ChatTag, $"{Players[steamid64]!.tag} ");
             }
             else
             {
-                SharedApi_Tag?.SetPlayerTag(player!, Tags.Tags_Tags.ChatTag, $"{{{Players[steamid64]!.tagcolor}}}{Players[steamid64]!.tag} ");
+                _tagApi?.SetAttribute(player!, Tags.TagType.ChatTag, $"{{{Players[steamid64]!.tagcolor}}}{Players[steamid64]!.tag} ");
             }
         }
         catch (Exception ex)

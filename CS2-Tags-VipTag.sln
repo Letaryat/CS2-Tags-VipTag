@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS2Tags_VipTag", "CS2Tags_VipTag.csproj", "{E3193409-4B6A-7649-02B9-93C32BE9F975}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsApi", "libs\TagsApi.csproj", "{EAA9BAD0-567C-423C-8007-4329A8EA40CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E3193409-4B6A-7649-02B9-93C32BE9F975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3193409-4B6A-7649-02B9-93C32BE9F975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3193409-4B6A-7649-02B9-93C32BE9F975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3193409-4B6A-7649-02B9-93C32BE9F975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAA9BAD0-567C-423C-8007-4329A8EA40CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA9BAD0-567C-423C-8007-4329A8EA40CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA9BAD0-567C-423C-8007-4329A8EA40CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA9BAD0-567C-423C-8007-4329A8EA40CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C0BE0B8-1DD8-4058-B239-AB8613EEEE56}
+	EndGlobalSection
+EndGlobal
