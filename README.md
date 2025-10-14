@@ -1,15 +1,15 @@
 # CS2Tags_VipTag
 This plugin allows to someone with specific permission to set up their own scoreboard tag, chat tag and colors. This plugin uses MySQL database to store information about tags.
+[![poor-developer discord server](https://i.imgur.com/8L6KsUZ.png)](https://discord.gg/mEmdyqM3Um)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H8TK0L9)
 
 ## [📌] Version for K4-Arenas:
-- [Arena-VipTagChange](https://github.com/Letaryat/CS2-Arena-VipTagChange).
+- [Arena-VipTagChange](https://github.com/Letaryat/CS2-Arena-VipTagChange) // Not updated for 1.4 version.
 
 ## [📌] Dependiencies:
 - [CounterStrikeSharp (tested on v294)](https://github.com/roflmuffin/CounterStrikeSharp)  
-- [CS2-Tags (at least v1.1)](https://github.com/schwarper/cs2-tags)
-- [PlayerSettings (needed for MenuManager)](https://github.com/NickFox007/PlayerSettingsCS2)
-- [AnyBaseLibCS2 (needed for MenuManager)](https://github.com/NickFox007/AnyBaseLibCS2)
-- [MenuManagerCS2](https://github.com/NickFox007/MenuManagerCS2)
+- [CS2-Tags (at least v1.4)](https://github.com/schwarper/cs2-tags)
+- [CS2MenuManager](https://github.com/schwarper/CS2MenuManager)
 
 ## [📋] Commands:
 - !settag  | Sets up tag. Usage: !settag ExampleTag,
@@ -42,7 +42,7 @@ This plugin allows to someone with specific permission to set up their own score
 ```
 
 ### [🩷] Thanks to:
-- [CS2-Tags (at least v1.1)](https://github.com/schwarper/cs2-tags) for api,
+- [CS2-Tags (at least v1.4)](https://github.com/schwarper/cs2-tags) for api,
 - [CS2-Ranks](https://github.com/partiusfabaa/cs2-ranks) how to manage things such as keeping player information from database,
 - CounterStrikeSharp discord,
 - Probably some other open-source projects that I forgot to mention,
