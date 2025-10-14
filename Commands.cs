@@ -1,10 +1,10 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
-using TagsApi;
 using Microsoft.Extensions.Logging;
 using CounterStrikeSharp.API.Modules.Admin;
+using CS2MenuManager.API.Menu;
+
 namespace CS2Tags_VipTag;
 
 public partial class CS2Tags_VipTag
@@ -12,7 +12,7 @@ public partial class CS2Tags_VipTag
 
     [ConsoleCommand("css_settag", "Ability for VIP to change their Scoreboard and Chat tag")]
     [CommandHelper(minArgs: 1, usage: "TagName")]
-    public async void TagChange(CCSPlayerController? player, CommandInfo commandInfo)
+    public void TagChange(CCSPlayerController? player, CommandInfo commandInfo)
     {
         if (player == null || player.IsBot || player.IsHLTV) return;
         if (!AdminManager.PlayerHasPermissions(player, Config.VipFlag))
@@ -42,14 +42,14 @@ public partial class CS2Tags_VipTag
                 };
             }
 
-            SharedApi_Tag?.SetPlayerTag(player, Tags.Tags_Tags.ScoreTag, newtag);
+            _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, newtag);
             if (Players[player.AuthorizedSteamID.SteamId64]!.tagcolor == null)
             {
-                SharedApi_Tag?.SetPlayerTag(player!, Tags.Tags_Tags.ChatTag, $"{Players[player.AuthorizedSteamID.SteamId64]!.tag} ");
+                _tagApi?.SetAttribute(player!, TagsApi.Tags.TagType.ChatTag, $"{Players[player.AuthorizedSteamID.SteamId64]!.tag} ");
             }
             else
             {
-                SharedApi_Tag?.SetPlayerTag(player, Tags.Tags_Tags.ChatTag, $"{{{Players[player.AuthorizedSteamID!.SteamId64]!.tagcolor}}}{arg} ");
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{Players[player.AuthorizedSteamID!.SteamId64]!.tagcolor}}}{arg} ");
             }
             player.PrintToChat($"{Localizer["Prefix"]}{Localizer["TagSet", arg]}");
             //await AddTag(player, arg);
@@ -59,8 +59,8 @@ public partial class CS2Tags_VipTag
             Logger.LogInformation($"TagChange: {ex}");
         }
 
-        //SharedApi_Tag?.SetPlayerColor(player, Tags.Tags_Colors.NameColor, "{Blue}");
-        //SharedApi_Tag?.SetPlayerColor(player, Tags.Tags_Colors.ChatColor, "{DarkRed}");
+        //_tagApi?.SetPlayerColor(player, Tags.Tags_Colors.NameColor, "{Blue}");
+        //_tagApi?.SetPlayerColor(player, Tags.Tags_Colors.ChatColor, "{DarkRed}");
     }
 
     [ConsoleCommand("css_tagmenu", "Ability for VIP to change their Scoreboard and Chat tag")]
@@ -77,14 +77,20 @@ public partial class CS2Tags_VipTag
             player.PrintToChat($"{Localizer["Prefix"]}{Localizer["SetupTag"]}");
             return;
         }
-        var menu = _api?.NewMenu(Localizer["VipMenu"]);
-        menu?.AddMenuOption($"{Localizer["ToggleTag"]} - {Players[player.AuthorizedSteamID!.SteamId64]!.visibility}", (player, option) =>
+        WasdMenu menu = new(Localizer["VipMenu"], this);
+        menu?.AddItem($"{Localizer["ToggleTag"]} - {Players[player.AuthorizedSteamID!.SteamId64]!.visibility}", (player, option) =>
         {
-            SharedApi_Tag?.SetPlayerToggleTags(player, !SharedApi_Tag.GetPlayerToggleTags(player));
+            _tagApi?.SetPlayerVisibility(player, !_tagApi.GetPlayerVisibility(player));
 
             if (Players[player.AuthorizedSteamID!.SteamId64]!.visibility == false)
             {
                 Players[player.AuthorizedSteamID!.SteamId64]!.visibility = true;
+
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, Players[player.AuthorizedSteamID.SteamId64]!.tag);
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatColor, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.chatcolor!}}}");
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.NameColor, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.namecolor!}}}");
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.tagcolor}}}{Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
+
                 player.PrintToChat($"{Localizer["Prefix"]}{Localizer["Toggled"]}");
             }
             else
@@ -93,18 +99,18 @@ public partial class CS2Tags_VipTag
                 player.PrintToChat($"{Localizer["Prefix"]}{Localizer["UnToggled"]}");
             }
         });
-        menu?.AddMenuOption(Localizer["TagColorMenu"], (player, option) =>
+        menu?.AddItem(Localizer["TagColorMenu"], (player, option) =>
         {
             CreateMenu(player, 1);
         });
-        menu?.AddMenuOption(Localizer["ChatColorMenu"], (player, option) =>
+        menu?.AddItem(Localizer["ChatColorMenu"], (player, option) =>
         {
             CreateMenu(player, 2);
         });
-        menu?.AddMenuOption(Localizer["NameColorMenu"], (player, option) =>
+        menu?.AddItem(Localizer["NameColorMenu"], (player, option) =>
         {
             CreateMenu(player, 3);
         });
-        menu?.Open(player);
+        menu?.Display(player, 0);
     }
 }
