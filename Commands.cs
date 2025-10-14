@@ -85,6 +85,12 @@ public partial class CS2Tags_VipTag
             if (Players[player.AuthorizedSteamID!.SteamId64]!.visibility == false)
             {
                 Players[player.AuthorizedSteamID!.SteamId64]!.visibility = true;
+
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag | TagsApi.Tags.TagType.ChatTag, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.tag}}}");
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatColor, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.chatcolor!}}}");
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.NameColor, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.namecolor!}}}");
+                _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.tagcolor}}}{Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
+
                 player.PrintToChat($"{Localizer["Prefix"]}{Localizer["Toggled"]}");
             }
             else
