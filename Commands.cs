@@ -80,12 +80,16 @@ public partial class CS2Tags_VipTag
         WasdMenu menu = new(Localizer["VipMenu"], this);
         menu?.AddItem($"{Localizer["ToggleTag"]} - {Players[player.AuthorizedSteamID!.SteamId64]!.visibility}", (player, option) =>
         {
-            _tagApi?.SetPlayerVisibility(player, !_tagApi.GetPlayerVisibility(player));
+            bool currentVisibility = Players[player.AuthorizedSteamID!.SteamId64]!.visibility ?? false;
 
-            if (Players[player.AuthorizedSteamID!.SteamId64]!.visibility == false)
+            bool newVisibility = !currentVisibility;
+
+            Players[player.AuthorizedSteamID!.SteamId64]!.visibility = newVisibility;
+
+            _tagApi?.SetPlayerVisibility(player, newVisibility);
+
+            if (newVisibility)
             {
-                Players[player.AuthorizedSteamID!.SteamId64]!.visibility = true;
-
                 _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, Players[player.AuthorizedSteamID.SteamId64]!.tag);
                 _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatColor, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.chatcolor!}}}");
                 _tagApi?.SetAttribute(player, TagsApi.Tags.TagType.NameColor, $"{{{Players[player.AuthorizedSteamID.SteamId64]!.namecolor!}}}");
@@ -95,10 +99,10 @@ public partial class CS2Tags_VipTag
             }
             else
             {
-                Players[player.AuthorizedSteamID!.SteamId64]!.visibility = false;
                 player.PrintToChat($"{Localizer["Prefix"]}{Localizer["UnToggled"]}");
             }
         });
+
         menu?.AddItem(Localizer["TagColorMenu"], (player, option) =>
         {
             CreateMenu(player, 1);
