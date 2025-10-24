@@ -15,7 +15,7 @@ namespace CS2Tags_VipTag
         {
             if (player == null) return;
             WasdMenu menu = new("Disable menu", _plugin);
-            menu.AddItem($"{_plugin.Localizer["ToggleEverythingMenu"]}  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}]", (p, o) =>
+            menu.AddItem($"{_plugin.Localizer["ToggleEverythingMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility ?? false;
 
@@ -35,7 +35,7 @@ namespace CS2Tags_VipTag
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
                 }
             });
-            menu.AddItem($"{_plugin.Localizer["ToggleScoreTagMenu"]}  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility}]", (p, o) =>
+            menu.AddItem($"{_plugin.Localizer["ToggleScoreTagMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility ?? false;
 
@@ -55,7 +55,7 @@ namespace CS2Tags_VipTag
                 }
 
             });
-            menu.AddItem($"{_plugin.Localizer["ToggleChatMenu"]}  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility}]", (p, o) =>
+            menu.AddItem($"{_plugin.Localizer["ToggleChatMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility ?? false;
 

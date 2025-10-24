@@ -1,9 +1,13 @@
 {
     "Prefix": "{lime}Tagi vipow {default}| ",
     "ToggleTag": "Przelacz widocznosc tagu",
+    "TagsMenu": "Spersonalizuj swoj tag",
     "TagColorMenu": "Kolor tagu",
     "ChatColorMenu": "Kolor czatu",
     "NameColorMenu": "Kolor nazw",
+    "ToggleEverythingMenu": "Przelacz wszystko",
+    "ToggleScoreTagMenu": "Przelacz tag na tabie",
+    "TogglChatMenu": "Przelacz tag na czacie",
     "NewTagColor": "Twoj nowy kolor tagu to: {0}",
     "NewChatColor": "Twoj nowy kolor czatu to: {0}",
     "NewNameColor": "Twoj nowy kolor nazwy to: {0}",
