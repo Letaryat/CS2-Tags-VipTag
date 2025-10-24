@@ -1,7 +1,8 @@
-namespace CS2Tags_VipTag;
-public partial class CS2Tags_VipTag
+using System.Text.Json.Serialization;
+
+namespace CS2Tags_VipTag.Models
 {
-    public class Player
+    public class PlayerModel
     {
         public required ulong steamid { get; set; }
         public required string tag { get; set; }
