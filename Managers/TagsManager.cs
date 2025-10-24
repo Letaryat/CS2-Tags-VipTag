@@ -7,13 +7,29 @@ namespace CS2Tags_VipTag
     {
         private readonly CS2Tags_VipTag _plugin = plugin;
 
-        public void SetEverythingTagRelated(CCSPlayerController player)
+        public void SetEverythingTagRelated(CCSPlayerController player, int mode)
         {
             if (player == null) return;
-            _plugin._tagApi?.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
-            SetChatTag(player);
+            if (mode == 0)
+            {
+                if (_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility == true)
+                {
+                    _plugin.TagsManager!.SetChatTag(player);
+                }
+                if (_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility == true)
+                {
+                    _plugin._tagApi.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
+                }
+            }
+            else
+            {
+                _plugin._tagApi?.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
+                SetChatTag(player);
+
+            }
             SetNameColor(player);
             SetChatColor(player);
+
         }
         public void SetChatTag(CCSPlayerController player)
         {

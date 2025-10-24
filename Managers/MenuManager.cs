@@ -15,7 +15,7 @@ namespace CS2Tags_VipTag
         {
             if (player == null) return;
             WasdMenu menu = new("Disable menu", _plugin);
-            menu.AddItem($"Toggle Everything  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}]", (p, o) =>
+            menu.AddItem($"{_plugin.Localizer["ToggleEverythingMenu"]}  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility ?? false;
 
@@ -27,14 +27,7 @@ namespace CS2Tags_VipTag
 
                 if (newVisibility)
                 {
-                    /*
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID.SteamId64]!.tag);
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatColor, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.chatcolor!}}}");
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.NameColor, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.namecolor!}}}");
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tagcolor}}}{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
-                    */
-
-                    _plugin.TagsManager!.SetEverythingTagRelated(player);
+                    _plugin.TagsManager!.SetEverythingTagRelated(player, 1);
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
                 }
                 else
@@ -42,7 +35,7 @@ namespace CS2Tags_VipTag
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
                 }
             });
-            menu.AddItem($"Toggle ScoreTag  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility}]", (p, o) =>
+            menu.AddItem($"{_plugin.Localizer["ToggleScoreTagMenu"]}  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility ?? false;
 
@@ -53,16 +46,16 @@ namespace CS2Tags_VipTag
                 if (newVisibility)
                 {
                     _plugin._tagApi.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
-                    Server.PrintToChatAll($"Test 1 {newVisibility}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
                 }
                 else
                 {
                     _plugin._tagApi.ResetAttribute(player, TagType.ScoreTag);
-                    Server.PrintToChatAll($"Test 2 {newVisibility}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
                 }
 
             });
-            menu.AddItem($"Toggle ChatTag  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility}]", (p, o) =>
+            menu.AddItem($"{_plugin.Localizer["ToggleChatMenu"]}  - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility ?? false;
 
@@ -72,14 +65,13 @@ namespace CS2Tags_VipTag
 
                 if (newVisibility)
                 {
-                    //_plugin._tagApi?.SetAttribute(player!, TagType.ChatTag, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tagcolor}}}{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tag} ");
                     _plugin.TagsManager!.SetChatTag(player);
-                    Server.PrintToChatAll($"Test 1 {newVisibility}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
                 }
                 else
                 {
                     _plugin._tagApi.ResetAttribute(player, TagType.ChatTag);
-                    Server.PrintToChatAll($"Test 2 {newVisibility}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
                 }
             });
             
@@ -88,7 +80,7 @@ namespace CS2Tags_VipTag
         public void CreateMenuWithColors(CCSPlayerController? player, int type)
         {
             if (player == null) { return; }
-            WasdMenu menu = new("Tags menu", _plugin);
+            WasdMenu menu = new(_plugin.Localizer["TagsMenu"], _plugin);
             switch (type)
             {
                 case 1:

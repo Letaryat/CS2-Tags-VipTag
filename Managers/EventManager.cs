@@ -4,6 +4,7 @@ using TagsApi;
 using Microsoft.Extensions.Logging;
 using CounterStrikeSharp.API.Modules.Admin;
 using CS2Tags_VipTag.Models;
+using static TagsApi.Tags;
 
 namespace CS2Tags_VipTag
 {
@@ -31,7 +32,8 @@ namespace CS2Tags_VipTag
                 if (_plugin.Players[steamid64]!.visibility == false) { return HookResult.Continue; }
                 //_plugin._tagApi?.SetAttribute(player!, Tags.TagType.ScoreTag, VipTag);
 
-                _plugin.TagsManager!.SetEverythingTagRelated(player);
+                _plugin.TagsManager!.SetEverythingTagRelated(player, 0);
+
             }
             catch (Exception ex)
             {

@@ -1,9 +1,13 @@
 {
     "Prefix": "{lime}Vip Tags {default}| ",
     "ToggleTag": "Toggle tag",
+    "TagsMenu": "Customize your tags",
     "TagColorMenu": "Tag menu",
     "ChatColorMenu": "Chat menu",
     "NameColorMenu": "Name menu",
+    "ToggleEverythingMenu": "Toggle Everything",
+    "ToggleScoreTagMenu": "Toggle Scoretag",
+    "TogglChatMenu": "Toggle ChatTag",
     "NewTagColor": "Your new tag color is: {0}",
     "NewChatColor": "Your new chat color is: {0}",
     "NewNameColor": "Your new name color is {0}",
