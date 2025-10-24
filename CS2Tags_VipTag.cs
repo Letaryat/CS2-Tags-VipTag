@@ -34,9 +34,11 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
     public DatabaseManager? DatabaseManager { get; private set; }
     public EventManager? EventManager { get; private set; }
     public MenuManager? MenuManager { get; private set; }
+    public CommandManager? CmdManager { get; private set; }
+    public TagsManager? TagsManager { get; private set; }
     public List<string> Colors =
         [
-        "Default", "White", "DarkRed", "Green", "LightYellow", "LightBlue", "Olive", "Lime", "Red", "LightPurple", "Purple", "Grey", "Yellow", "Gold", "Silver", "Blue","DarkBlue", "BlueGrey", "Magenta", "LightRed", "Orange"
+        "TeamColor", "White", "DarkRed", "Green", "LightYellow", "LightBlue", "Olive", "Lime", "Red", "LightPurple", "Purple", "Grey", "Yellow", "Gold", "Silver", "Blue","DarkBlue", "BlueGrey", "Magenta", "LightRed", "Orange"
         ];
     public override void Load(bool hotReload)
     {
@@ -44,9 +46,12 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
         DatabaseManager = new DatabaseManager(this);
         EventManager = new EventManager(this);
         MenuManager = new MenuManager(this);
+        CmdManager = new CommandManager(this);
+        TagsManager = new TagsManager(this);
 
         DatabaseManager.InitializeConnection();
         EventManager.InitializeEvents();
+        CmdManager.InitializeCommands();
 
         Logger.LogInformation("CS2Tags_VipTag - Loaded");
 
@@ -66,7 +71,7 @@ public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
         }
         
     }
-    public async void OnConfigParsed(TagConfig config)
+    public void OnConfigParsed(TagConfig config)
     {
         Config = config;
     }

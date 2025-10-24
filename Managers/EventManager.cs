@@ -27,33 +27,11 @@ namespace CS2Tags_VipTag
                 var steamid64 = player!.AuthorizedSteamID!.SteamId64;
                 if (!_plugin.Players.ContainsKey(steamid64)) return HookResult.Continue;
                 if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag)) return HookResult.Continue;
-                var VipTag = $" {_plugin.Players[steamid64]!.tag}";
+                //var VipTag = $" {_plugin.Players[steamid64]!.tag}";
                 if (_plugin.Players[steamid64]!.visibility == false) { return HookResult.Continue; }
-                _plugin._tagApi?.SetAttribute(player!, Tags.TagType.ScoreTag | Tags.TagType.ChatTag, VipTag);
-                if (_plugin.Players[steamid64]!.chatcolor == null)
-                {
-                    _plugin._tagApi?.ResetAttribute(player, Tags.TagType.ChatColor);
-                }
-                else
-                {
-                    _plugin._tagApi?.SetAttribute(player!, Tags.TagType.ChatColor, $"{{{_plugin.Players[steamid64]!.chatcolor}}}");
-                }
-                if (_plugin.Players[steamid64]!.namecolor == null)
-                {
-                    _plugin._tagApi?.ResetAttribute(player, Tags.TagType.NameColor);
-                }
-                else
-                {
-                    _plugin._tagApi?.SetAttribute(player!, Tags.TagType.NameColor, $"{{{_plugin.Players[steamid64]!.namecolor}}}");
-                }
-                if (_plugin.Players[steamid64]!.tagcolor == null)
-                {
-                    _plugin._tagApi?.SetAttribute(player!, Tags.TagType.ChatTag, $"{_plugin.Players[steamid64]!.tag} ");
-                }
-                else
-                {
-                    _plugin._tagApi?.SetAttribute(player!, Tags.TagType.ChatTag, $"{{{_plugin.Players[steamid64]!.tagcolor}}}{_plugin.Players[steamid64]!.tag} ");
-                }
+                //_plugin._tagApi?.SetAttribute(player!, Tags.TagType.ScoreTag, VipTag);
+
+                _plugin.TagsManager!.SetEverythingTagRelated(player);
             }
             catch (Exception ex)
             {
@@ -136,7 +114,9 @@ namespace CS2Tags_VipTag
                 tagcolor = user.tagcolor,
                 namecolor = user.namecolor,
                 chatcolor = user.chatcolor,
-                visibility = user.visibility ?? false
+                visibility = user.visibility ?? false,
+                chatvisibility = user.chatvisibility ?? false,
+                scorevisibility = user.scorevisibility ?? false,
             };
         }
 

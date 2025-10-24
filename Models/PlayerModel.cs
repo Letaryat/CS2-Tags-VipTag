@@ -9,6 +9,8 @@ namespace CS2Tags_VipTag.Models
         public string? tagcolor { get; set; }
         public string? namecolor { get; set; }
         public string? chatcolor { get; set; }
-        public bool? visibility {get; set; }
+        public bool? visibility { get; set; }
+        public bool? chatvisibility { get; set; }
+        public bool? scorevisibility { get; set; }
     }
 }

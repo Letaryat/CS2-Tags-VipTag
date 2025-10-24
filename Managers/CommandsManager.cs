@@ -46,7 +46,9 @@ namespace CS2Tags_VipTag
                         tagcolor = null,
                         namecolor = null,
                         chatcolor = null,
-                        visibility = true
+                        visibility = true,
+                        chatvisibility = true,
+                        scorevisibility = true,
                     };
                 }
 
@@ -81,42 +83,23 @@ namespace CS2Tags_VipTag
                 return;
             }
             WasdMenu menu = new(_plugin.Localizer["VipMenu"], _plugin);
-            menu?.AddItem($"{_plugin.Localizer["ToggleTag"]} - {_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}", (player, option) =>
+
+            menu?.AddItem($"{_plugin.Localizer["ToggleTagMenu"]}", (player, option) =>
             {
-                bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility ?? false;
-
-                bool newVisibility = !currentVisibility;
-
-                _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility = newVisibility;
-
-                _plugin._tagApi?.SetPlayerVisibility(player, newVisibility);
-
-                if (newVisibility)
-                {
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID.SteamId64]!.tag);
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatColor, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.chatcolor!}}}");
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.NameColor, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.namecolor!}}}");
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tagcolor}}}{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
-
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
-                }
-                else
-                {
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
-                }
+                _plugin.MenuManager!.CreateDisableMenu(player);
             });
 
             menu?.AddItem(_plugin.Localizer["TagColorMenu"], (player, option) =>
             {
-                _plugin.MenuManager!.CreateMenu(player, 1);
+                _plugin.MenuManager!.CreateMenuWithColors(player, 1);
             });
             menu?.AddItem(_plugin.Localizer["ChatColorMenu"], (player, option) =>
             {
-                _plugin.MenuManager!.CreateMenu(player, 2);
+                _plugin.MenuManager!.CreateMenuWithColors(player, 2);
             });
             menu?.AddItem(_plugin.Localizer["NameColorMenu"], (player, option) =>
             {
-                _plugin.MenuManager!.CreateMenu(player, 3);
+                _plugin.MenuManager!.CreateMenuWithColors(player, 3);
             });
             menu?.Display(player, 0);
         }

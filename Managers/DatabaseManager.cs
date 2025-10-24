@@ -42,7 +42,9 @@ namespace CS2Tags_VipTag
                 TagColor VARCHAR(50),
                 NameColor VARCHAR(50),
                 ChatColor VARCHAR(50),
-                Visibility TiNYINT(1)
+                Visibility TiNYINT(1),
+                ChatVisibility TiNYINT(1),
+                ScoreVisibility TiNYINT(1)
             );";
                 await connection.QueryFirstOrDefaultAsync(createTable);
             }
@@ -92,7 +94,7 @@ namespace CS2Tags_VipTag
                     return;
                 }
                 await connection.OpenAsync();
-                string sqlInsert = "INSERT INTO `VipTags_Players` (`SteamID`, `Tag`, `Visibility`) VALUES (@SteamID, @tag, true)";
+                string sqlInsert = "INSERT INTO `VipTags_Players` (`SteamID`, `Tag`, `Visibility`, `ChatVisibility`, `ScoreVisibility`) VALUES (@SteamID, @tag, true, true, true)";
                 await connection.ExecuteAsync(sqlInsert, new { SteamID, tag });
             }
             catch (Exception ex)
@@ -116,18 +118,20 @@ namespace CS2Tags_VipTag
                     TagColor = _plugin.Players[SteamID]!.tagcolor ?? null,
                     ChatColor = _plugin.Players[SteamID]!.chatcolor ?? null,
                     NameColor = _plugin.Players[SteamID]!.namecolor ?? null,
-                    Visibility = _plugin.Players[SteamID]!.visibility ?? true
+                    Visibility = _plugin.Players[SteamID]!.visibility ?? true,
+                    ChatVisibility = _plugin.Players[SteamID]!.chatvisibility ?? true,
+                    ScoreVisibility = _plugin.Players[SteamID]!.scorevisibility ?? true,
                 };
                 if (userExists)
                 {
                     _plugin.Logger.LogInformation($"User exists! Updating tag!");
                     await connection.OpenAsync();
-                    string sqlUpdate = "UPDATE `VipTags_Players` SET `Tag` = @Tag, `TagColor` = @TagColor, `NameColor` = @NameColor, `ChatColor` = @ChatColor, `Visibility` = @Visibility WHERE `SteamID` = @SteamID";
+                    string sqlUpdate = "UPDATE `VipTags_Players` SET `Tag` = @Tag, `TagColor` = @TagColor, `NameColor` = @NameColor, `ChatColor` = @ChatColor, `Visibility` = @Visibility, `ChatVisibility` = @ChatVisibility, `ScoreVisibility` = @ScoreVisibility WHERE `SteamID` = @SteamID";
                     await connection.ExecuteAsync(sqlUpdate, parameters);
                     return;
                 }
                 await connection.OpenAsync();
-                string sqlInsert = "INSERT INTO `VipTags_Players` (`SteamID`, `Tag`, `TagColor`, `NameColor`, `ChatColor`, `Visibility`) VALUES (@SteamID, @Tag, @TagColor, @NameColor, @ChatColor, @Visibility)";
+                string sqlInsert = "INSERT INTO `VipTags_Players` (`SteamID`, `Tag`, `TagColor`, `NameColor`, `ChatColor`, `Visibility`, `ChatVisibility`, `ScoreVisibility`) VALUES (@SteamID, @Tag, @TagColor, @NameColor, @ChatColor, @Visibility, @ChatVisibility, @ScoreVisibility)";
                 await connection.ExecuteAsync(sqlInsert, parameters);
             }
             catch (Exception err)
@@ -156,7 +160,9 @@ namespace CS2Tags_VipTag
                         TagColor = player.tagcolor ?? null,
                         ChatColor = player.chatcolor ?? null,
                         NameColor = player.namecolor ?? null,
-                        Visibility = player.visibility ?? true
+                        Visibility = player.visibility ?? true,
+                        ChatVis = player.chatvisibility ?? true,
+                        ScoreVis = player.scorevisibility ?? true
                     };
                     if (userExists)
                     {
@@ -164,7 +170,7 @@ namespace CS2Tags_VipTag
                         string sqlUpdate = @"
                     UPDATE `VipTags_Players`
                     SET `Tag` = @Tag, `TagColor` = @TagColor, `NameColor` = @NameColor, 
-                        `ChatColor` = @ChatColor, `Visibility` = @Visibility
+                        `ChatColor` = @ChatColor, `Visibility` = @Visibility, `ChatVisibility` = @ChatVis, `ScoreVisibility` = @ScoreVis
                     WHERE `SteamID` = @SteamID";
                         await connection.ExecuteAsync(sqlUpdate, parameters);
                     }
@@ -173,8 +179,8 @@ namespace CS2Tags_VipTag
                         _plugin.Logger.LogInformation($"Inserting new tag {steamid}");
                         string sqlInsert = @"
                     INSERT INTO `VipTags_Players` 
-                    (`SteamID`, `Tag`, `TagColor`, `NameColor`, `ChatColor`, `Visibility`) 
-                    VALUES (@SteamID, @Tag, @TagColor, @NameColor, @ChatColor, @Visibility)";
+                    (`SteamID`, `Tag`, `TagColor`, `NameColor`, `ChatColor`, `Visibility`, `ChatVisibility`, `ScoreVisibility`) 
+                    VALUES (@SteamID, @Tag, @TagColor, @NameColor, @ChatColor, @Visibility, @ChatVis, @ScoreVis)";
                         await connection.ExecuteAsync(sqlInsert, parameters);
                     }
                 }

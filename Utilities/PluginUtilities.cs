@@ -9,8 +9,9 @@ namespace CS2Tags_VipTag
             try
             {
                 Dictionary<string, string> predefinedColors = new Dictionary<string, string>
-            {
-                {"Default", "#FFFFFF"},
+                {
+                //{"TeamColor", "#FFFFFF"},
+                {"CTBlue", "#5F99D9"},
                 {"BlueGrey", "#B1C4D9"},
                 {"Grey", "#C6CBD0"},
                 {"LightPurple", "#BB82F0"},
