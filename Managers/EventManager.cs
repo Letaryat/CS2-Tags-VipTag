@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using CounterStrikeSharp.API.Modules.Admin;
 using CS2Tags_VipTag.Models;
 using static TagsApi.Tags;
+using CounterStrikeSharp.API;
 
 namespace CS2Tags_VipTag
 {
@@ -14,11 +15,12 @@ namespace CS2Tags_VipTag
 
         public void InitializeEvents()
         {
-            _plugin.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+            // _plugin.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
             _plugin.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnect);
             _plugin.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         }
 
+        /*
         public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
         {
             try
@@ -43,6 +45,7 @@ namespace CS2Tags_VipTag
             return HookResult.Continue;
         }
 
+        */
         public HookResult OnPlayerConnect(EventPlayerConnectFull @event, GameEventInfo info)
         {
             try
@@ -56,6 +59,16 @@ namespace CS2Tags_VipTag
                     try
                     {
                         await OnClientAuthorizedAsync(steamid64);
+
+                        Server.NextFrame(() =>
+                        {
+                            //var VipTag = $" {_plugin.Players[steamid64]!.tag}";
+                            if (_plugin.Players[steamid64]!.visibility == false) { return; }
+                            //_plugin._tagApi?.SetAttribute(player!, Tags.TagType.ScoreTag, VipTag);
+
+                            _plugin.TagsManager!.SetEverythingTagRelated(player, 0);
+                        });
+
                     }
                     catch (Exception ex)
                     {
