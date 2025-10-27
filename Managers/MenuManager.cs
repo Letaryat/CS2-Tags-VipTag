@@ -10,10 +10,11 @@ namespace CS2Tags_VipTag
     {
         private readonly CS2Tags_VipTag _plugin = plugin;
 
-        public void CreateDisableMenu(CCSPlayerController player)
+        public void CreateDisableMenu(CCSPlayerController player, WasdMenu? parentMenu)
         {
             if (player == null) return;
             WasdMenu menu = new("Disable menu", _plugin);
+            menu.PrevMenu = parentMenu;
             menu.AddItem($"{_plugin.Localizer["ToggleEverythingMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}]", (p, o) =>
             {
                 bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility ?? false;
@@ -73,13 +74,13 @@ namespace CS2Tags_VipTag
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledChatTag"]}");
                 }
             });
-            
-            menu.Display(player, 0);
+            menu!.Display(player, 0);
         }
-        public void CreateMenuWithColors(CCSPlayerController? player, int type)
+        public void CreateMenuWithColors(CCSPlayerController? player, int type, WasdMenu? parentMenu)
         {
-            if (player == null) { return; }
+            if (player == null) return;
             WasdMenu menu = new(_plugin.Localizer["TagsMenu"], _plugin);
+
             switch (type)
             {
                 case 1:
@@ -93,11 +94,13 @@ namespace CS2Tags_VipTag
                     break;
             }
 
+            menu.PrevMenu = parentMenu;
+
             foreach (var chatcolors in _plugin.Colors)
             {
                 string hex = PluginUtilities.FromNameToHex(chatcolors)!;
                 string? menuOption;
-                if(chatcolors == "TeamColor")
+                if (chatcolors == "TeamColor")
                 {
                     if (player.Team == CsTeam.CounterTerrorist)
                     {
