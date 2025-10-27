@@ -85,20 +85,20 @@ namespace CS2Tags_VipTag
 
             menu?.AddItem($"{_plugin.Localizer["ToggleTagMenu"]}", (player, option) =>
             {
-                _plugin.MenuManager!.CreateDisableMenu(player);
+                _plugin.MenuManager!.CreateDisableMenu(player, menu);
             });
 
             menu?.AddItem(_plugin.Localizer["TagColorMenu"], (player, option) =>
             {
-                _plugin.MenuManager!.CreateMenuWithColors(player, 1);
+                _plugin.MenuManager!.CreateMenuWithColors(player, 1, menu);
             });
             menu?.AddItem(_plugin.Localizer["ChatColorMenu"], (player, option) =>
             {
-                _plugin.MenuManager!.CreateMenuWithColors(player, 2);
+                _plugin.MenuManager!.CreateMenuWithColors(player, 2, menu);
             });
             menu?.AddItem(_plugin.Localizer["NameColorMenu"], (player, option) =>
             {
-                _plugin.MenuManager!.CreateMenuWithColors(player, 3);
+                _plugin.MenuManager!.CreateMenuWithColors(player, 3, menu);
             });
             menu?.Display(player, 0);
         }
