@@ -15,5 +15,9 @@
     "SetupTag": "You need to setup tag first!",
     "NoPermissions": "You dont have permissions to set custom tag!",
     "Toggled": "Vip tag is now visible!",
-    "UnToggled": "Vip tag is no longer visible!"
+    "UnToggled": "Vip tag is no longer visible!",
+    "ToggledScoreTag": "Vip ScoreTag is now visible!",
+    "UnToggledScoreTag": "Vip ScoreTag is no longer visible!",
+    "ToggledChatTag": "Vip ChatTag is now visible!",
+    "UnToggledChatTag": "Vip ChatTag is no longer visible!"
 }

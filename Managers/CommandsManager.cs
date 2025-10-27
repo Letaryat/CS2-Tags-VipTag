@@ -2,7 +2,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CS2MenuManager;
 using CS2MenuManager.API.Menu;
 using CS2Tags_VipTag.Models;
 using Microsoft.Extensions.Logging;

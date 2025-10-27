@@ -1,4 +1,3 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -46,12 +45,12 @@ namespace CS2Tags_VipTag
                 if (newVisibility)
                 {
                     _plugin._tagApi.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["ToggledScoreTag"]}");
                 }
                 else
                 {
                     _plugin._tagApi.ResetAttribute(player, TagType.ScoreTag);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledScoreTag"]}");
                 }
 
             });
@@ -66,12 +65,12 @@ namespace CS2Tags_VipTag
                 if (newVisibility)
                 {
                     _plugin.TagsManager!.SetChatTag(player);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["ToggledChatTag"]}");
                 }
                 else
                 {
                     _plugin._tagApi.ResetAttribute(player, TagType.ChatTag);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
+                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledChatTag"]}");
                 }
             });
             

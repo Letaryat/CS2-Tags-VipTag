@@ -1,11 +1,8 @@
 ﻿using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Translations;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using CS2MenuManager.API.Menu;
 using TagsApi;
-using static TagsApi.Tags;
 using CS2Tags_VipTag.Models;
 
 namespace CS2Tags_VipTag;

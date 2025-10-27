@@ -15,5 +15,9 @@
     "SetupTag": "Pierw musisz ustawic tag!",
     "NoPermissions": "Nie posiadasz permisji aby ustawic tag!",
     "Toggled": "Tag vipa jest teraz widoczny!",
-    "UnToggled": "Tag vipa nie jest juz widoczny!"
+    "UnToggled": "Tag vipa nie jest juz widoczny!",
+    "ToggledScoreTag": "Klan tag jest widoczny!",
+    "UnToggledScoreTag": "Klan tag juz nie jest widoczny!",
+    "ToggledChatTag": "Tag na chacie jest widoczny!",
+    "UnToggledChatTag": "Tag na chacie juz nie jest widoczny!"
 }

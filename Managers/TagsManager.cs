@@ -29,8 +29,8 @@ namespace CS2Tags_VipTag
             }
             SetNameColor(player);
             SetChatColor(player);
-
         }
+        
         public void SetChatTag(CCSPlayerController player)
         {
             if (player == null) return;

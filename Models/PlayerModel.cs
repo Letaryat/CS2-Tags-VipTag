@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace CS2Tags_VipTag.Models
 {
     public class PlayerModel

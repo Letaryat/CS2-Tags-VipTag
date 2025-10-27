@@ -1,10 +1,8 @@
 
 using CounterStrikeSharp.API.Core;
-using TagsApi;
 using Microsoft.Extensions.Logging;
 using CounterStrikeSharp.API.Modules.Admin;
 using CS2Tags_VipTag.Models;
-using static TagsApi.Tags;
 using CounterStrikeSharp.API;
 
 namespace CS2Tags_VipTag
@@ -62,9 +60,7 @@ namespace CS2Tags_VipTag
 
                         Server.NextFrame(() =>
                         {
-                            //var VipTag = $" {_plugin.Players[steamid64]!.tag}";
-                            if (_plugin.Players[steamid64]!.visibility == false) { return; }
-                            //_plugin._tagApi?.SetAttribute(player!, Tags.TagType.ScoreTag, VipTag);
+                            if (_plugin.Players[steamid64]!.visibility == false) return;
 
                             _plugin.TagsManager!.SetEverythingTagRelated(player, 0);
                         });
