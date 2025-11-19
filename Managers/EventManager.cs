@@ -58,8 +58,12 @@ namespace CS2Tags_VipTag
                     {
                         await OnClientAuthorizedAsync(steamid64);
 
+                        //if (!_plugin.Players.ContainsKey(steamid64)) return;
+
                         Server.NextFrame(() =>
                         {
+                            if (!_plugin.Players.TryGetValue(steamid64, out var model)) return;
+
                             if (_plugin.Players[steamid64]!.visibility == false) return;
 
                             _plugin.TagsManager!.SetEverythingTagRelated(player, 0);
@@ -87,8 +91,17 @@ namespace CS2Tags_VipTag
                 var player = @event.Userid;
                 if (player == null || player.IsBot || player.IsHLTV) return HookResult.Continue;
                 var steamid64 = player!.AuthorizedSteamID!.SteamId64;
-                if (!_plugin.Players.ContainsKey(steamid64)) return HookResult.Continue;
-                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag)) return HookResult.Continue;
+                if (steamid64 == 0) return HookResult.Continue;
+
+                if (!_plugin.Players.TryGetValue(steamid64, out var model))
+                    return HookResult.Continue;
+
+                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag))
+                    return HookResult.Continue;
+
+                //if (!_plugin.Players.ContainsKey(steamid64)) return HookResult.Continue;
+                //if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag)) return HookResult.Continue;
+                
                 Task.Run(async () =>
                 {
                     try
@@ -102,7 +115,8 @@ namespace CS2Tags_VipTag
                     }
                     finally
                     {
-                        _plugin.Players.Remove(steamid64, out var _);
+                        //_plugin.Players.Remove(steamid64, out var _);
+                        _plugin.Players.TryRemove(steamid64, out _);
                     }
                 });
             }
