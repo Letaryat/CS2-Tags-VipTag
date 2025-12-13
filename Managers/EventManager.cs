@@ -89,9 +89,17 @@ namespace CS2Tags_VipTag
             try
             {
                 var player = @event.Userid;
-                if (player == null || player.IsBot || player.IsHLTV) return HookResult.Continue;
-                var steamid64 = player!.AuthorizedSteamID!.SteamId64;
-                if (steamid64 == 0) return HookResult.Continue;
+
+                if (player == null || player.IsBot || player.IsHLTV)
+                    return HookResult.Continue;
+
+                var auth = player.AuthorizedSteamID;
+                if (auth == null)
+                    return HookResult.Continue;
+
+                ulong steamid64 = auth.SteamId64;
+                if (steamid64 == 0)
+                    return HookResult.Continue;
 
                 if (!_plugin.Players.TryGetValue(steamid64, out var model))
                     return HookResult.Continue;
@@ -99,23 +107,19 @@ namespace CS2Tags_VipTag
                 if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag))
                     return HookResult.Continue;
 
-                //if (!_plugin.Players.ContainsKey(steamid64)) return HookResult.Continue;
-                //if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag)) return HookResult.Continue;
-                
                 Task.Run(async () =>
                 {
                     try
                     {
-                        _plugin.Logger.LogInformation("Saving player into db");
+                        _plugin.Logger.LogInformation($"Saving player {steamid64} into DB");
                         await _plugin.DatabaseManager!.SaveTags(steamid64);
                     }
                     catch (Exception ex)
                     {
-                        _plugin.Logger.LogInformation($"{ex}");
+                        _plugin.Logger.LogInformation($"DB Error: {ex}");
                     }
                     finally
                     {
-                        //_plugin.Players.Remove(steamid64, out var _);
                         _plugin.Players.TryRemove(steamid64, out _);
                     }
                 });
@@ -124,8 +128,10 @@ namespace CS2Tags_VipTag
             {
                 _plugin.Logger.LogInformation($"OnPlayerDisconnect - {ex}");
             }
+
             return HookResult.Continue;
         }
+
 
         public async Task OnClientAuthorizedAsync(ulong steamid)
         {

@@ -25,6 +25,7 @@ namespace CS2Tags_VipTag
                 Port = Config.DBPort,
                 Password = Config.DBPassword,
                 Database = Config.DBName,
+                CharacterSet = "utf8mb4"
             };
 
             DbConnection = builder.ConnectionString;
@@ -37,13 +38,13 @@ namespace CS2Tags_VipTag
                 var sqlcmd = connection.CreateCommand();
                 string createTable = @"CREATE TABLE IF NOT EXISTS VipTags_Players(
                 SteamID VARCHAR(255) PRIMARY KEY,
-                Tag VARCHAR(50),
+                Tag VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                 TagColor VARCHAR(50),
                 NameColor VARCHAR(50),
                 ChatColor VARCHAR(50),
-                Visibility TiNYINT(1),
-                ChatVisibility TiNYINT(1),
-                ScoreVisibility TiNYINT(1)
+                Visibility TINYINT(1),
+                ChatVisibility TINYINT(1),
+                ScoreVisibility TINYINT(1)
             );";
                 await connection.QueryFirstOrDefaultAsync(createTable);
             }
