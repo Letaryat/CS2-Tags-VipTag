@@ -14,7 +14,7 @@
 	  <PackageReference Include="Dapper" Version="*" />
 	  <PackageReference Include="MySqlConnector" Version="2.4.0" />
 	</ItemGroup>
-		<ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\extensions\TagsApi\TagsApi.csproj" />
 	</ItemGroup>
 </Project>

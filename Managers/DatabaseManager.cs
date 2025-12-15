@@ -25,6 +25,7 @@ namespace CS2Tags_VipTag
                 Port = Config.DBPort,
                 Password = Config.DBPassword,
                 Database = Config.DBName,
+                CharacterSet = "utf8mb4"
             };
 
             DbConnection = builder.ConnectionString;
@@ -35,16 +36,41 @@ namespace CS2Tags_VipTag
                 await connection.OpenAsync();
                 _plugin.Logger.LogInformation($"Succesfully connected to mysql database");
                 var sqlcmd = connection.CreateCommand();
+
+                string createTable = @"CREATE TABLE IF NOT EXISTS VipTags_Players (
+                                    SteamID VARCHAR(255) NOT NULL,
+                                    Tag VARCHAR(50)
+                                        CHARACTER SET utf8mb4
+                                        COLLATE utf8mb4_unicode_ci,
+                                    TagColor VARCHAR(50)
+                                        CHARACTER SET utf8mb4
+                                        COLLATE utf8mb4_unicode_ci,
+                                    NameColor VARCHAR(50)
+                                        CHARACTER SET utf8mb4
+                                        COLLATE utf8mb4_unicode_ci,
+                                    ChatColor VARCHAR(50)
+                                        CHARACTER SET utf8mb4
+                                        COLLATE utf8mb4_unicode_ci,
+                                    Visibility TINYINT(1),
+                                    ChatVisibility TINYINT(1),
+                                    ScoreVisibility TINYINT(1),
+                                    PRIMARY KEY (SteamID)
+                                )
+                                ENGINE=InnoDB
+                                DEFAULT CHARSET=utf8mb4
+                                COLLATE=utf8mb4_unicode_ci;";
+                /*
                 string createTable = @"CREATE TABLE IF NOT EXISTS VipTags_Players(
                 SteamID VARCHAR(255) PRIMARY KEY,
-                Tag VARCHAR(50),
+                Tag VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                 TagColor VARCHAR(50),
                 NameColor VARCHAR(50),
                 ChatColor VARCHAR(50),
-                Visibility TiNYINT(1),
-                ChatVisibility TiNYINT(1),
-                ScoreVisibility TiNYINT(1)
-            );";
+                Visibility TINYINT(1),
+                ChatVisibility TINYINT(1),
+                ScoreVisibility TINYINT(1)
+                );";
+                */
                 await connection.QueryFirstOrDefaultAsync(createTable);
             }
             catch (Exception ex)
@@ -228,29 +254,29 @@ namespace CS2Tags_VipTag
             }
         }
 
-    public async Task<PlayerModel?> FetchPlayerInfo(ulong SteamID)
-    {
-        await using var connection = new MySqlConnection(DbConnection);
-        var userExists = await UserExist(SteamID);
-        try
+        public async Task<PlayerModel?> FetchPlayerInfo(ulong SteamID)
         {
-            await Task.Run(() => userExists);
-            if (!userExists)
+            await using var connection = new MySqlConnection(DbConnection);
+            var userExists = await UserExist(SteamID);
+            try
             {
-                _plugin.Logger.LogInformation($"No player in database with steamid: {SteamID}");
-                return null;
+                await Task.Run(() => userExists);
+                if (!userExists)
+                {
+                    _plugin.Logger.LogInformation($"No player in database with steamid: {SteamID}");
+                    return null;
+                }
+                await connection.OpenAsync();
+                string sqlSelect = $"SELECT * FROM `VipTags_Players` WHERE `SteamID` = {SteamID}";
+                var user = await connection.QueryFirstOrDefaultAsync<PlayerModel>(sqlSelect);
+                return user;
             }
-            await connection.OpenAsync();
-            string sqlSelect = $"SELECT * FROM `VipTags_Players` WHERE `SteamID` = {SteamID}";
-            var user = await connection.QueryFirstOrDefaultAsync<PlayerModel>(sqlSelect);
-            return user;
+            catch (Exception ex)
+            {
+                _plugin.Logger.LogInformation($"Fetchplayerinfo: {ex}");
+            }
+            return null;
         }
-        catch (Exception ex)
-        {
-            _plugin.Logger.LogInformation($"Fetchplayerinfo: {ex}");
-        }
-        return null;
-    }
 
     }
 }
