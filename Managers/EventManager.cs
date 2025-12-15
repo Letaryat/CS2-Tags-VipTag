@@ -49,7 +49,7 @@ namespace CS2Tags_VipTag
             try
             {
                 var player = @event.Userid;
-                if (player == null || player.IsBot || player.IsHLTV) return HookResult.Continue;
+                if (player == null || player.IsBot || player.IsHLTV || player.AuthorizedSteamID == null) return HookResult.Continue;
                 var steamid64 = player!.AuthorizedSteamID!.SteamId64;
                 if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag)) return HookResult.Continue;
                 Task.Run(async () =>

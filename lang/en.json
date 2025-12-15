@@ -1,4 +1,4 @@
-{
+﻿{
     "Prefix": "{lime}Vip Tags {default}| ",
     "ToggleTag": "Toggle tag",
     "TagsMenu": "Customize your tags",
@@ -19,5 +19,6 @@
     "ToggledScoreTag": "Vip ScoreTag is now visible!",
     "UnToggledScoreTag": "Vip ScoreTag is no longer visible!",
     "ToggledChatTag": "Vip ChatTag is now visible!",
-    "UnToggledChatTag": "Vip ChatTag is no longer visible!"
+    "UnToggledChatTag": "Vip ChatTag is no longer visible!",
+    "TooLong": "Too much characters!"
 }

@@ -1,4 +1,4 @@
-{
+﻿{
     "Prefix": "{lime}Tagi vipow {default}| ",
     "ToggleTag": "Przelacz widocznosc tagu",
     "TagsMenu": "Spersonalizuj swoj tag",
@@ -19,5 +19,6 @@
     "ToggledScoreTag": "Klan tag jest widoczny!",
     "UnToggledScoreTag": "Klan tag juz nie jest widoczny!",
     "ToggledChatTag": "Tag na chacie jest widoczny!",
-    "UnToggledChatTag": "Tag na chacie juz nie jest widoczny!"
+    "UnToggledChatTag": "Tag na chacie juz nie jest widoczny!",
+    "TooLong": "Za duzo znakow!"
 }

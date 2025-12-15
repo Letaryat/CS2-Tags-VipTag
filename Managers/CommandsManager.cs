@@ -28,7 +28,25 @@ namespace CS2Tags_VipTag
                 return;
             }
 
-            var arg = commandInfo.GetArg(1);
+            //var arg = commandInfo.GetArg(1);
+
+            string arg = "";
+
+            for (int i = 1; i < commandInfo.ArgCount; i++)
+            {
+                arg += commandInfo.GetArg(i) + " ";
+            }
+
+            arg = arg.TrimEnd();
+
+            if (arg.Length > 50)
+            {
+                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["TooLong"]}");
+                return;
+            }
+
+    
+
             var newtag = $"{arg} ";
             try
             {
