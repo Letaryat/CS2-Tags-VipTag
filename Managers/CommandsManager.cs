@@ -100,25 +100,27 @@ namespace CS2Tags_VipTag
                 player!.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["NoPermissions"]}");
                 return;
             }
+            /*
             if (!_plugin.Players.ContainsKey(player.AuthorizedSteamID!.SteamId64))
             {
                 player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["SetupTag"]}");
                 return;
             }
+            */
             WasdMenu menu = new(_plugin.Localizer["VipMenu"], _plugin);
 
             menu?.AddItem($"{_plugin.Localizer["ToggleTagMenu"]}", (player, option) =>
             {
                 _plugin.MenuManager!.CreateDisableMenu(player, menu);
             },
-            disableOption: AdminManager.PlayerHasPermissions(player, _plugin.Config.VipToggleMenuFlag)
+            disableOption: (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipToggleMenuFlag) && _plugin.Players.ContainsKey(player.AuthorizedSteamID!.SteamId64))
                 ? CS2MenuManager.API.Enum.DisableOption.None
                 : CS2MenuManager.API.Enum.DisableOption.DisableHideNumber);
             menu?.AddItem(_plugin.Localizer["TagColorMenu"], (player, option) =>
             {
                 _plugin.MenuManager!.CreateMenuWithColors(player, 1, menu);
             },
-            disableOption: (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipTagColorFlag) && AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag))
+            disableOption: (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipTagColorFlag) && AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag) && _plugin.Players.ContainsKey(player.AuthorizedSteamID!.SteamId64))
                 ? CS2MenuManager.API.Enum.DisableOption.None
                 : CS2MenuManager.API.Enum.DisableOption.DisableHideNumber);
             menu?.AddItem(_plugin.Localizer["ChatColorMenu"], (player, option) =>
