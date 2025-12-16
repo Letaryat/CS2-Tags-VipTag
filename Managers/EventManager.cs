@@ -104,7 +104,7 @@ namespace CS2Tags_VipTag
                 if (!_plugin.Players.TryGetValue(steamid64, out var model))
                     return HookResult.Continue;
 
-                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipScoreboardFlag) || !AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag) || !AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatColorFlag) || !AdminManager.PlayerHasPermissions(player, _plugin.Config.VipNameColorFlag))
+                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipSetTagFlag))
                     return HookResult.Continue;
 
                 Task.Run(async () =>

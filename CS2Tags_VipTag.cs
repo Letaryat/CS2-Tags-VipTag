@@ -27,7 +27,7 @@ public class TagConfig : BasePluginConfig
 public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
 {
     public override string ModuleName => "CS2Tags_VipTag";
-    public override string ModuleVersion => "0.3.7";
+    public override string ModuleVersion => "0.3.8";
     public override string ModuleAuthor => "Letaryat";
     public override string ModuleDescription => "Tag change for vip players";
     public ITagApi _tagApi = null!;
