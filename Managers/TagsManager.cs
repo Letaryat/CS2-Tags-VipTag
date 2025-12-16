@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Admin;
 using static TagsApi.Tags;
 
 namespace CS2Tags_VipTag
@@ -9,68 +10,107 @@ namespace CS2Tags_VipTag
 
         public void SetEverythingTagRelated(CCSPlayerController player, int mode)
         {
-            if (player == null) return;
-            if (mode == 0)
+            if (player?.AuthorizedSteamID == null)
+                return;
+
+            ulong steamid64 = player.AuthorizedSteamID.SteamId64;
+
+            if (!_plugin.Players.TryGetValue(steamid64, out var model))
+                return;
+
+            if (model == null) return;
+
+            if (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipScoreboardFlag))
             {
-                if (_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility == true)
-                {
-                    _plugin.TagsManager!.SetChatTag(player);
-                }
-                if (_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility == true)
-                {
-                    _plugin._tagApi.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
-                }
+                if (mode == 1 || model.scorevisibility == true)
+                    _plugin._tagApi?.SetAttribute(player, TagType.ScoreTag, model.tag);
+                else
+                    _plugin._tagApi?.ResetAttribute(player, TagType.ScoreTag);
             }
             else
             {
-                _plugin._tagApi?.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
-                SetChatTag(player);
-
+                _plugin._tagApi?.ResetAttribute(player, TagType.ScoreTag);
             }
+
+            // CHAT TAG
+            if (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag))
+            {
+                if (mode == 1 || model.chatvisibility == true)
+                    SetChatTag(player);
+                else
+                    _plugin._tagApi?.ResetAttribute(player, TagType.ChatTag);
+            }
+            else
+            {
+                _plugin._tagApi?.ResetAttribute(player, TagType.ChatTag);
+            }
+
             SetNameColor(player);
             SetChatColor(player);
         }
-        
+
+
+
         public void SetChatTag(CCSPlayerController player)
         {
-            if (player == null) return;
-            var steamid64 = player!.AuthorizedSteamID!.SteamId64;
-            if (_plugin.Players[steamid64]!.tagcolor == null)
-            {
-                _plugin._tagApi?.SetAttribute(player!, TagType.ChatTag, $"{_plugin.Players[steamid64]!.tag} ");
-            }
+            if (player?.AuthorizedSteamID == null)
+                return;
+
+            ulong steamid64 = player.AuthorizedSteamID.SteamId64;
+
+            if (!_plugin.Players.TryGetValue(steamid64, out var model))
+                return;
+
+            if (model == null) return;
+
+            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipTagColorFlag) || model.tagcolor == null)
+                _plugin._tagApi?.SetAttribute(player, TagType.ChatTag, $"{model.tag} ");
             else
-            {
-                _plugin._tagApi?.SetAttribute(player!, TagType.ChatTag, $"{{{_plugin.Players[steamid64]!.tagcolor}}}{_plugin.Players[steamid64]!.tag} ");
-            }
+                _plugin._tagApi?.SetAttribute(player, TagType.ChatTag, $"{{{model.tagcolor}}}{model.tag} ");
         }
+
 
         public void SetNameColor(CCSPlayerController player)
         {
-            if (player == null) return;
-            var steamid64 = player!.AuthorizedSteamID!.SteamId64;
-            if (_plugin.Players[steamid64]!.namecolor == null)
+            if (player?.AuthorizedSteamID == null)
+                return;
+
+            ulong steamid64 = player.AuthorizedSteamID.SteamId64;
+
+            if (!_plugin.Players.TryGetValue(steamid64, out var model))
+                return;
+
+            if (model == null) return;
+
+            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipNameColorFlag) || model.namecolor == null)
             {
                 _plugin._tagApi?.ResetAttribute(player, TagType.NameColor);
+                return;
             }
-            else
-            {
-                _plugin._tagApi?.SetAttribute(player!, TagType.NameColor, $"{{{_plugin.Players[steamid64]!.namecolor}}}");
-            }
-        }
-        public void SetChatColor(CCSPlayerController player)
-        {
-            if (player == null) return;
-            var steamid64 = player!.AuthorizedSteamID!.SteamId64;
-            if (_plugin.Players[steamid64]!.chatcolor == null)
-            {
-                _plugin._tagApi?.ResetAttribute(player, TagType.ChatColor);
-            }
-            else
-            {
-                _plugin._tagApi?.SetAttribute(player!, TagType.ChatColor, $"{{{_plugin.Players[steamid64]!.chatcolor}}}");
-            }
+
+            _plugin._tagApi?.SetAttribute(player, TagType.NameColor, $"{{{model.namecolor}}}");
         }
 
+        public void SetChatColor(CCSPlayerController player)
+        {
+            if (player?.AuthorizedSteamID == null)
+                return;
+
+            ulong steamid64 = player.AuthorizedSteamID.SteamId64;
+
+
+            if (!_plugin.Players.TryGetValue(steamid64, out var model))
+                return;
+
+            if (model == null) return;
+
+            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatColorFlag) || model.chatcolor == null)
+            {
+                _plugin._tagApi?.ResetAttribute(player, TagType.ChatColor);
+                return;
+            }
+
+            _plugin._tagApi?.SetAttribute(player, TagType.ChatColor, $"{{{model.chatcolor}}}");
+        }
     }
 }

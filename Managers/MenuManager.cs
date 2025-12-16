@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -34,6 +35,13 @@ namespace CS2Tags_VipTag
                 {
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
                 }
+                o.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Close;
+
+                Server.NextWorldUpdate(() =>
+                {
+                    CreateDisableMenu(player, parentMenu);
+                });
+
             });
             menu.AddItem($"{_plugin.Localizer["ToggleScoreTagMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility}]", (p, o) =>
             {
@@ -53,7 +61,12 @@ namespace CS2Tags_VipTag
                     _plugin._tagApi.ResetAttribute(player, TagType.ScoreTag);
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledScoreTag"]}");
                 }
+                o.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Close;
 
+                Server.NextWorldUpdate(() =>
+                {
+                    CreateDisableMenu(player, parentMenu);
+                });
             });
             menu.AddItem($"{_plugin.Localizer["ToggleChatMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility}]", (p, o) =>
             {
@@ -73,6 +86,13 @@ namespace CS2Tags_VipTag
                     _plugin._tagApi.ResetAttribute(player, TagType.ChatTag);
                     player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledChatTag"]}");
                 }
+
+                o.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Close;
+
+                Server.NextWorldUpdate(() =>
+                {
+                    CreateDisableMenu(player, parentMenu);
+                });
             });
             menu!.Display(player, 0);
         }
@@ -139,6 +159,7 @@ namespace CS2Tags_VipTag
                             _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.namecolor = chatcolors;
                             break;
                     }
+                    option.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Nothing;
                 });
             }
             menu!.Display(player, 0);

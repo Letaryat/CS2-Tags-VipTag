@@ -22,7 +22,7 @@ namespace CS2Tags_VipTag
         public void TagChange(CCSPlayerController? player, CommandInfo commandInfo)
         {
             if (player == null || player.IsBot || player.IsHLTV) return;
-            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag))
+            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipSetTagFlag))
             {
                 player!.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["NoPermissions"]}");
                 return;
@@ -45,7 +45,7 @@ namespace CS2Tags_VipTag
                 return;
             }
 
-    
+
 
             var newtag = $"{arg} ";
             try
@@ -68,16 +68,22 @@ namespace CS2Tags_VipTag
                         scorevisibility = true,
                     };
                 }
+                if (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipScoreboardFlag))
+                {
+                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, newtag);
+                }
+                if (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag))
+                {
+                    if (_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tagcolor == null)
+                    {
+                        _plugin._tagApi?.SetAttribute(player!, TagsApi.Tags.TagType.ChatTag, $"{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tag} ");
+                    }
+                    else
+                    {
+                        _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tagcolor}}}{arg} ");
+                    }
+                }
 
-                _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ScoreTag, newtag);
-                if (_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tagcolor == null)
-                {
-                    _plugin._tagApi?.SetAttribute(player!, TagsApi.Tags.TagType.ChatTag, $"{_plugin.Players[player.AuthorizedSteamID.SteamId64]!.tag} ");
-                }
-                else
-                {
-                    _plugin._tagApi?.SetAttribute(player, TagsApi.Tags.TagType.ChatTag, $"{{{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tagcolor}}}{arg} ");
-                }
                 player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["TagSet", arg]}");
             }
             catch (Exception ex)
@@ -89,7 +95,7 @@ namespace CS2Tags_VipTag
         public void TagMenu(CCSPlayerController? player, CommandInfo commandInfo)
         {
             if (player == null || player.IsBot || player.IsHLTV) return;
-            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag))
+            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipSetTagFlag))
             {
                 player!.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["NoPermissions"]}");
                 return;
@@ -104,20 +110,31 @@ namespace CS2Tags_VipTag
             menu?.AddItem($"{_plugin.Localizer["ToggleTagMenu"]}", (player, option) =>
             {
                 _plugin.MenuManager!.CreateDisableMenu(player, menu);
-            });
-
+            },
+            disableOption: AdminManager.PlayerHasPermissions(player, _plugin.Config.VipToggleMenuFlag)
+                ? CS2MenuManager.API.Enum.DisableOption.None
+                : CS2MenuManager.API.Enum.DisableOption.DisableHideNumber);
             menu?.AddItem(_plugin.Localizer["TagColorMenu"], (player, option) =>
             {
                 _plugin.MenuManager!.CreateMenuWithColors(player, 1, menu);
-            });
+            },
+            disableOption: (AdminManager.PlayerHasPermissions(player, _plugin.Config.VipTagColorFlag) && AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag))
+                ? CS2MenuManager.API.Enum.DisableOption.None
+                : CS2MenuManager.API.Enum.DisableOption.DisableHideNumber);
             menu?.AddItem(_plugin.Localizer["ChatColorMenu"], (player, option) =>
             {
                 _plugin.MenuManager!.CreateMenuWithColors(player, 2, menu);
-            });
+            },
+            disableOption: AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatColorFlag)
+                ? CS2MenuManager.API.Enum.DisableOption.None
+                : CS2MenuManager.API.Enum.DisableOption.DisableHideNumber);
             menu?.AddItem(_plugin.Localizer["NameColorMenu"], (player, option) =>
             {
                 _plugin.MenuManager!.CreateMenuWithColors(player, 3, menu);
-            });
+            },
+            disableOption: AdminManager.PlayerHasPermissions(player, _plugin.Config.VipNameColorFlag)
+                ? CS2MenuManager.API.Enum.DisableOption.None
+                : CS2MenuManager.API.Enum.DisableOption.DisableHideNumber);
             menu?.Display(player, 0);
         }
 

@@ -51,7 +51,7 @@ namespace CS2Tags_VipTag
                 var player = @event.Userid;
                 if (player == null || player.IsBot || player.IsHLTV || player.AuthorizedSteamID == null) return HookResult.Continue;
                 var steamid64 = player!.AuthorizedSteamID!.SteamId64;
-                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag)) return HookResult.Continue;
+                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipSetTagFlag)) return HookResult.Continue;
                 Task.Run(async () =>
                 {
                     try
@@ -104,7 +104,7 @@ namespace CS2Tags_VipTag
                 if (!_plugin.Players.TryGetValue(steamid64, out var model))
                     return HookResult.Continue;
 
-                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipFlag))
+                if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipScoreboardFlag) || !AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatFlag) || !AdminManager.PlayerHasPermissions(player, _plugin.Config.VipChatColorFlag) || !AdminManager.PlayerHasPermissions(player, _plugin.Config.VipNameColorFlag))
                     return HookResult.Continue;
 
                 Task.Run(async () =>
