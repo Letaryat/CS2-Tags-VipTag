@@ -9,8 +9,8 @@ namespace CS2Tags_VipTag;
 
 public class TagConfig : BasePluginConfig
 {
-    [JsonPropertyName("Vip_VipSetTagFlag")] public string VipSetTagFlag { get; set; } = "@vip/vipsettag";
-    [JsonPropertyName("Vip_VipToggleMenuFlag")] public string VipToggleMenuFlag { get; set; } = "@vip/viptogglemenu";
+    [JsonPropertyName("Vip_SetTagFlag")] public string VipSetTagFlag { get; set; } = "@vip/vipsettag";
+    [JsonPropertyName("Vip_ToggleMenuFlag")] public string VipToggleMenuFlag { get; set; } = "@vip/viptogglemenu";
     [JsonPropertyName("Vip_ScoreboardFlag")] public string VipScoreboardFlag { get; set; } = "@vip/scoreboardflag";
     [JsonPropertyName("Vip_ChatFlag")] public string VipChatFlag { get; set; } = "@vip/chatflag";
     [JsonPropertyName("Vip_TagColorFlag")] public string VipTagColorFlag { get; set; } = "@vip/tagcolor";
@@ -27,7 +27,7 @@ public class TagConfig : BasePluginConfig
 public partial class CS2Tags_VipTag : BasePlugin, IPluginConfig<TagConfig>
 {
     public override string ModuleName => "CS2Tags_VipTag";
-    public override string ModuleVersion => "0.3.9";
+    public override string ModuleVersion => "0.4";
     public override string ModuleAuthor => "Letaryat";
     public override string ModuleDescription => "Tag change for vip players";
     public ITagApi _tagApi = null!;

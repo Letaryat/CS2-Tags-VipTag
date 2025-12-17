@@ -31,7 +31,13 @@ This plugin allows to someone with specific permission to set up their own score
 
 ```
 {
-  "VipFlag": "@vip-plugin", //flag example
+  "Vip_VipSetTagFlag": "@vip/vipsettag", // Flag that allows players to set tags. It is mandatory to save data to database.
+  "Vip_VipToggleMenuFlag": "@vip/viptogglemenu", // Flag that allows players to use Toggle menu in !tagmenu
+  "Vip_ScoreboardFlag": "@vip/scoreboardflag", // Flag that makes scoreboard tag visible
+  "Vip_ChatFlag": "@vip/chatflag", // Flag that makes chat tag visible
+  "Vip_TagColorFlag": "@vip/tagcolor", // Flag that allows players to change Tag color
+  "Vip_ChatColorFlag": "@vip/chatcolor", // Flag that allows players to change Chat color
+  "Vip_NameColorFlag": "@vip/namecolor", // Flag that allows players to change Name color
   "DBHost": "", //MySQL Host
   "DBPort": 3306, //MySQL Port
   "DBUsername": "", //MySQL Username
