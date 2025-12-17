@@ -95,7 +95,7 @@ namespace CS2Tags_VipTag
         public void TagMenu(CCSPlayerController? player, CommandInfo commandInfo)
         {
             if (player == null || player.IsBot || player.IsHLTV) return;
-            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.VipSetTagFlag))
+            if (!AdminManager.PlayerHasPermissions(player, _plugin.Config.Vip_BaseFlag))
             {
                 player!.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["NoPermissions"]}");
                 return;

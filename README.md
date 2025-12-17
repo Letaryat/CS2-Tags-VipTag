@@ -31,7 +31,8 @@ This plugin allows to someone with specific permission to set up their own score
 
 ```
 {
-  "Vip_VipSetTagFlag": "@vip/vipsettag", // Flag that allows players to set tags. It is mandatory to save data to database.
+  "Vip_BaseFlag": "@vip/vipbaseflag", // It is mandatory to save data to database and have access to !tagmenu.
+  "Vip_VipSetTagFlag": "@vip/vipsettag", // Flag that allows players to set tags. 
   "Vip_VipToggleMenuFlag": "@vip/viptogglemenu", // Flag that allows players to use Toggle menu in !tagmenu
   "Vip_ScoreboardFlag": "@vip/scoreboardflag", // Flag that makes scoreboard tag visible
   "Vip_ChatFlag": "@vip/chatflag", // Flag that makes chat tag visible
