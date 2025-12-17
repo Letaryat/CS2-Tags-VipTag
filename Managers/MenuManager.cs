@@ -2,7 +2,9 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Utils;
+using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Menu;
+using CS2Tags_VipTag.Models;
 using static TagsApi.Tags;
 
 namespace CS2Tags_VipTag
@@ -11,159 +13,175 @@ namespace CS2Tags_VipTag
     {
         private readonly CS2Tags_VipTag _plugin = plugin;
 
+        private bool TryGetModel(CCSPlayerController? player, out PlayerModel model)
+        {
+            model = null!;
+
+            if (player?.AuthorizedSteamID == null)
+                return false;
+
+            return _plugin.Players.TryGetValue(
+                player.AuthorizedSteamID.SteamId64,
+                out model!
+            );
+        }
+
+
         public void CreateDisableMenu(CCSPlayerController player, WasdMenu? parentMenu)
         {
-            if (player == null) return;
-            WasdMenu menu = new("Disable menu", _plugin);
-            menu.PrevMenu = parentMenu;
-            menu.AddItem($"{_plugin.Localizer["ToggleEverythingMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility}]", (p, o) =>
+            if (!TryGetModel(player, out var model))
+                return;
+
+            WasdMenu menu = new("Disable menu", _plugin)
             {
-                bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility ?? false;
-
-                bool newVisibility = !currentVisibility;
-
-                _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.visibility = newVisibility;
-
-                _plugin._tagApi?.SetPlayerVisibility(player, newVisibility);
-
-                if (newVisibility)
+                PrevMenu = parentMenu
+            };
+            menu.AddItem(
+                $"{_plugin.Localizer["ToggleEverythingMenu"]} - [{model.visibility}]",
+                (p, o) =>
                 {
-                    _plugin.TagsManager!.SetEverythingTagRelated(player, 1);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
-                }
-                else
-                {
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
-                }
-                o.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Close;
-
-                Server.NextWorldUpdate(() =>
-                {
-                    CreateDisableMenu(player, parentMenu);
-                });
-
-            });
-            menu.AddItem($"{_plugin.Localizer["ToggleScoreTagMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility}]", (p, o) =>
-            {
-                bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility ?? false;
-
-                bool newVisibility = !currentVisibility;
-
-                _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.scorevisibility = newVisibility;
-
-                if (newVisibility)
-                {
-                    _plugin._tagApi.SetAttribute(player, TagType.ScoreTag, _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["ToggledScoreTag"]}");
-                }
-                else
-                {
-                    _plugin._tagApi.ResetAttribute(player, TagType.ScoreTag);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledScoreTag"]}");
-                }
-                o.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Close;
-
-                Server.NextWorldUpdate(() =>
-                {
-                    CreateDisableMenu(player, parentMenu);
-                });
-            });
-            menu.AddItem($"{_plugin.Localizer["ToggleChatMenu"]} - [{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility}]", (p, o) =>
-            {
-                bool currentVisibility = _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility ?? false;
-
-                bool newVisibility = !currentVisibility;
-
-                _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatvisibility = newVisibility;
-
-                if (newVisibility)
-                {
-                    _plugin.TagsManager!.SetChatTag(player);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["ToggledChatTag"]}");
-                }
-                else
-                {
-                    _plugin._tagApi.ResetAttribute(player, TagType.ChatTag);
-                    player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledChatTag"]}");
-                }
-
-                o.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Close;
-
-                Server.NextWorldUpdate(() =>
-                {
-                    CreateDisableMenu(player, parentMenu);
-                });
-            });
-            menu!.Display(player, 0);
-        }
-        public void CreateMenuWithColors(CCSPlayerController? player, int type, WasdMenu? parentMenu)
-        {
-            if (player == null) return;
-            WasdMenu menu = new(_plugin.Localizer["TagsMenu"], _plugin);
-
-            switch (type)
-            {
-                case 1:
-                    menu = new(_plugin.Localizer["TagColorMenu"], _plugin);
-                    break;
-                case 2:
-                    menu = new(_plugin.Localizer["ChatColorMenu"], _plugin);
-                    break;
-                case 3:
-                    menu = new(_plugin.Localizer["NameColorMenu"], _plugin);
-                    break;
-            }
-
-            menu.PrevMenu = parentMenu;
-
-            foreach (var chatcolors in _plugin.Colors)
-            {
-                string hex = PluginUtilities.FromNameToHex(chatcolors)!;
-                string? menuOption;
-                if (chatcolors == "TeamColor")
-                {
-                    if (player.Team == CsTeam.CounterTerrorist)
+                    if (!TryGetModel(p, out var m))
                     {
-                        hex = PluginUtilities.FromNameToHex("CTBlue")!;
+                        o.PostSelectAction = PostSelectAction.Close;
+                        return;
                     }
-                    else if (player.Team == CsTeam.Terrorist)
+
+                    m.visibility = !(m.visibility ?? false);
+                    _plugin._tagApi?.SetPlayerVisibility(p, m.visibility ?? true);
+
+                    if (m.visibility == true)
                     {
-                        hex = PluginUtilities.FromNameToHex("Orange")!;
+                        _plugin.TagsManager!.SetEverythingTagRelated(p, 1);
+                        p.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Toggled"]}");
                     }
                     else
                     {
-                        hex = "#FFFFFF";
+                        p.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggled"]}");
                     }
+
+                    o.PostSelectAction = PostSelectAction.Close;
+                    Server.NextWorldUpdate(() => CreateDisableMenu(p, parentMenu));
                 }
-                menuOption = $"<font color='{hex}'><b>{chatcolors}</b></font>";
+            );
 
-                menu?.AddItem(menuOption, (player, option) =>
+            menu.AddItem(
+                $"{_plugin.Localizer["ToggleScoreTagMenu"]} - [{model.scorevisibility}]",
+                (p, o) =>
                 {
-                    switch (type)
+                    if (!TryGetModel(p, out var m))
                     {
-                        case 1:
-                            string? playertag = _plugin._tagApi?.GetAttribute(player, TagType.ScoreTag);
-                            _plugin._tagApi?.SetAttribute(player, TagType.ChatTag, $"{{{chatcolors}}}{_plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tag} ");
-
-                            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{{{chatcolors}}}{_plugin.Localizer["NewTagColor", chatcolors]}".ReplaceColorTags().Replace("{TeamColor}", ChatColors.ForTeam(player.Team).ToString()));
-                            _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.tagcolor = chatcolors;
-                            break;
-                        case 2:
-                            _plugin._tagApi?.SetAttribute(player, TagType.ChatColor, $"{{{chatcolors}}}");
-                            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{{{chatcolors}}}{_plugin.Localizer["NewChatColor", chatcolors]}".ReplaceColorTags().Replace("{TeamColor}", ChatColors.ForTeam(player.Team).ToString()));
-                            _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.chatcolor = chatcolors;
-                            break;
-                        case 3:
-                            _plugin._tagApi?.SetAttribute(player, TagType.NameColor, $"{{{chatcolors}}}");
-                            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{{{chatcolors}}}{_plugin.Localizer["NewNameColor", chatcolors]}".ReplaceColorTags().Replace("{TeamColor}", ChatColors.ForTeam(player.Team).ToString()));
-                            _plugin.Players[player.AuthorizedSteamID!.SteamId64]!.namecolor = chatcolors;
-                            break;
+                        o.PostSelectAction = PostSelectAction.Close;
+                        return;
                     }
-                    option.PostSelectAction = CS2MenuManager.API.Enum.PostSelectAction.Nothing;
-                });
-            }
-            menu!.Display(player, 0);
+
+                    m.scorevisibility = !(m.scorevisibility ?? false);
+
+                    if (m.scorevisibility == true)
+                    {
+                        _plugin._tagApi?.SetAttribute(p, TagType.ScoreTag, m.tag);
+                        p.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["ToggledScoreTag"]}");
+                    }
+                    else
+                    {
+                        _plugin._tagApi?.ResetAttribute(p, TagType.ScoreTag);
+                        p.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledScoreTag"]}");
+                    }
+
+                    o.PostSelectAction = PostSelectAction.Close;
+                    Server.NextWorldUpdate(() => CreateDisableMenu(p, parentMenu));
+                }
+            );
+
+            menu.AddItem(
+                $"{_plugin.Localizer["ToggleChatMenu"]} - [{model.chatvisibility}]",
+                (p, o) =>
+                {
+                    if (!TryGetModel(p, out var m))
+                    {
+                        o.PostSelectAction = PostSelectAction.Close;
+                        return;
+                    }
+
+                    m.chatvisibility = !(m.chatvisibility ?? false);
+
+                    if (m.chatvisibility == true)
+                    {
+                        _plugin.TagsManager!.SetChatTag(p);
+                        p.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["ToggledChatTag"]}");
+                    }
+                    else
+                    {
+                        _plugin._tagApi?.ResetAttribute(p, TagType.ChatTag);
+                        p.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["UnToggledChatTag"]}");
+                    }
+
+                    o.PostSelectAction = PostSelectAction.Close;
+                    Server.NextWorldUpdate(() => CreateDisableMenu(p, parentMenu));
+                }
+            );
+
+            menu.Display(player, 0);
         }
+
+        public void CreateMenuWithColors(CCSPlayerController? player, int type, WasdMenu? parentMenu)
+        {
+            if (player == null) return;
+            if (!TryGetModel(player, out var model))
+                return;
+
+            WasdMenu menu = type switch
+            {
+                1 => new(_plugin.Localizer["TagColorMenu"], _plugin),
+                2 => new(_plugin.Localizer["ChatColorMenu"], _plugin),
+                3 => new(_plugin.Localizer["NameColorMenu"], _plugin),
+                _ => new(_plugin.Localizer["TagsMenu"], _plugin)
+            };
+
+            menu.PrevMenu = parentMenu;
+
+            foreach (var color in _plugin.Colors)
+            {
+                string hex = PluginUtilities.FromNameToHex(color) ?? "#FFFFFF";
+
+                menu.AddItem(
+                    $"<font color='{hex}'><b>{color}</b></font>",
+                    (p, o) =>
+                    {
+                        if (!TryGetModel(p, out var m))
+                        {
+                            o.PostSelectAction = PostSelectAction.Close;
+                            return;
+                        }
+
+                        switch (type)
+                        {
+                            case 1:
+                                m.tagcolor = color;
+                                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{{{color}}}{_plugin.Localizer["NewTagColor", color]}".ReplaceColorTags().Replace("{TeamColor}", ChatColors.ForTeam(player.Team).ToString()));
+                                _plugin.TagsManager!.SetChatTag(p);
+                                break;
+
+                            case 2:
+                                m.chatcolor = color;
+                                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{{{color}}}{_plugin.Localizer["NewChatColor", color]}".ReplaceColorTags().Replace("{TeamColor}", ChatColors.ForTeam(player.Team).ToString()));
+                                _plugin._tagApi?.SetAttribute(p, TagType.ChatColor, $"{{{color}}}");
+                                break;
+
+                            case 3:
+                                m.namecolor = color;
+                                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{{{color}}}{_plugin.Localizer["NewNameColor", color]}".ReplaceColorTags().Replace("{TeamColor}", ChatColors.ForTeam(player.Team).ToString()));
+                                _plugin._tagApi?.SetAttribute(p, TagType.NameColor, $"{{{color}}}");
+                                break;
+                        }
+
+                        o.PostSelectAction = PostSelectAction.Nothing;
+                    }
+                );
+            }
+
+            menu.Display(player!, 0);
+        }
+
 
     }
 }
